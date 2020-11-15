@@ -8,7 +8,11 @@ package juego;
  * 		...
  *
  */
+
 public class CuatroEnLinea {
+	
+	private String jugadorRojo;
+	private String jugadorAmarillo;
 	
 	private Casillero[][] tablero;
 
@@ -25,7 +29,19 @@ public class CuatroEnLinea {
 	 * @param jugadorAmarillo : nombre del jugador con fichas amarillas.
 	 */
 	public CuatroEnLinea(int filas, int columnas, String jugadorRojo, String jugadorAmarillo) {
-
+		if(filas<4 && columnas<4){
+			throw new Error("medidas del tablero invalidas:" +filas +"X" +columnas );
+		}
+		
+		tablero = new Casillero[filas][columnas];
+		for(int i=0;i<filas;i++){
+			for(int j=0;j<columnas;j++){
+				tablero[filas][columnas] = Casillero.VACIO;
+			}
+		}
+		
+		this.jugadorRojo = jugadorRojo;
+		this.jugadorAmarillo = jugadorAmarillo;
 	}
 
 	/**
