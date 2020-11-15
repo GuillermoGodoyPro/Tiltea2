@@ -15,6 +15,8 @@ public class CuatroEnLinea {
 	private String jugadorAmarillo;
 	private Casillero[][] tablero;
 	private boolean primerJugador = true;
+	private boolean hayGanador = false;
+	
 	/**
 	 * pre : 'filas' y 'columnas' son mayores o iguales a 4 y filas son menores a 8 y columnas menores a 16.
 	 * post: empieza el juego entre el jugador que tiene fichas rojas, identificado como 
@@ -82,21 +84,21 @@ public class CuatroEnLinea {
 	 * @param columna
 	 */
 	public void soltarFichaEnColumna(int columna) {
-		int ultimaFila = tablero.length -1;
+		int ultimaFila = tablero.length - 1;
 		
 		if (!termino()){
-			while(ultimaFila >0 && tablero[ultimaFila][columna-1] != Casillero.VACIO){
-			ultimaFila--;
+			while(ultimaFila > 0 && tablero[ultimaFila][columna-1] != Casillero.VACIO){
+				ultimaFila--;
 			}
 			if (tablero[0][columna-1] != Casillero.VACIO){
-			throw new Error ("Columna llena");
+				throw new Error ("Columna llena");
 			}
 			if (primerJugador == true){
-			tablero [ultimaFila][columna-1] = Casillero.ROJO;
-			primerJugador = false;
+				tablero [ultimaFila][columna-1] = Casillero.ROJO;
+				primerJugador = false;
 			}
 			else {tablero [ultimaFila][columna-1] = Casillero.AMARILLO;
-			primerJugador = true;
+				primerJugador = true;
 			}
 		}
 	}
@@ -106,15 +108,19 @@ public class CuatroEnLinea {
 	 */
 	public boolean termino() {
 		boolean juegoFinalizado = false;
+		int casillerosPintados = 0 ;
 		
-		for (int i = 0;i < tablero.length;i++){
-			for (int j = 0;j < tablero[i].length;j++){
-				if(tablero[i][j] == Casillero.VACIO){
-					juegoFinalizado = false;
-				}
-				else {
+		for (int filas = 0 ; filas < tablero.length; filas++ ){
+			for (int columnas = 0; columnas < (tablero[filas].length) ; columnas++){
+				if(tablero[filas][columnas] != Casillero.VACIO){
+					casillerosPintados++;
+				}				
+				
+				if(casillerosPintados == ((tablero.length)*(tablero[filas].length) )){
+					hayGanador();
 					juegoFinalizado = true;
 				}
+				
 			}	
 		}	
 		return juegoFinalizado;
