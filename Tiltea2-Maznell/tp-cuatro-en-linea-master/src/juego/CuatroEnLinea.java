@@ -98,13 +98,14 @@ public class CuatroEnLinea {
 			tablero [ultimaFila][ultimaColumna] = jugadorActual;
 
 			
-			if (!esFichaGanadora(jugadorActual,ultimaFila,ultimaColumna) && jugadorActual == Casillero.ROJO){
-				jugadorActual = Casillero.AMARILLO;	
+			if (!esFichaGanadora(jugadorActual,ultimaFila,columna-1)){
+				if (jugadorActual == Casillero.ROJO){
+					jugadorActual = Casillero.AMARILLO;	
+				}
+				else if (jugadorActual == Casillero.AMARILLO){
+					jugadorActual = Casillero.ROJO;	
+				}
 			}
-			else if (!esFichaGanadora(jugadorActual,ultimaFila,ultimaColumna) && jugadorActual == Casillero.AMARILLO){
-				jugadorActual = Casillero.ROJO;	
-			}
-				
 			
 		}
 	}
