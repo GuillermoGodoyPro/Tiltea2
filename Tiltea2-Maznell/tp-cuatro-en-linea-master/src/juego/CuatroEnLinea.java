@@ -1,3 +1,4 @@
+  
 package juego;
 
 
@@ -14,8 +15,7 @@ public class CuatroEnLinea {
 	private String jugadorRojo;
 	private String jugadorAmarillo;
 	private Casillero[][] tablero;
-	private boolean primerJugador = true;
-	private boolean hayGanador = false;
+	private Casillero jugadorActual = Casillero.ROJO;	
 	
 	/**
 	 * pre : 'filas' y 'columnas' son mayores o iguales a 4 y filas son menores a 8 y columnas menores a 16.
@@ -85,23 +85,55 @@ public class CuatroEnLinea {
 	 */
 	public void soltarFichaEnColumna(int columna) {
 		int ultimaFila = tablero.length - 1;
+		int ultimaColumna = columna - 1;
 		
 		if (!termino()){
-			while(ultimaFila > 0 && tablero[ultimaFila][columna-1] != Casillero.VACIO){
+			while(ultimaFila > 0 && tablero[ultimaFila][ultimaColumna] != Casillero.VACIO){
 				ultimaFila--;
 			}
-			if (tablero[0][columna-1] != Casillero.VACIO){
+			if (tablero[0][ultimaColumna] != Casillero.VACIO){
 				throw new Error ("Columna llena");
 			}
-			if (primerJugador == true){
-				tablero [ultimaFila][columna-1] = Casillero.ROJO;
-				primerJugador = false;
+			
+			tablero [ultimaFila][ultimaColumna] = jugadorActual;
+
+			
+			if (!esFichaGanadora(jugadorActual,ultimaFila,ultimaColumna) && jugadorActual == Casillero.ROJO){
+				jugadorActual = Casillero.AMARILLO;	
 			}
-			else {tablero [ultimaFila][columna-1] = Casillero.AMARILLO;
-				primerJugador = true;
+			else if (!esFichaGanadora(jugadorActual,ultimaFila,ultimaColumna) && jugadorActual == Casillero.AMARILLO){
+				jugadorActual = Casillero.ROJO;	
 			}
+				
+			
 		}
 	}
+	
+	//                                                        0        6
+	private boolean esFichaGanadora (Casillero color  ,int fila, int columna){
+		int cantidadDeColores = 1;
+		int j = columna + 1;
+		
+//			7
+		while ( (j) < (tablero[0].length) && cantidadDeColores < 4 && tablero[fila][j] == color ){
+			cantidadDeColores++;
+			j++;
+		}
+		j = columna-1;
+		while ( cantidadDeColores < 4 && j >=0 && tablero[fila][j] == color){
+			cantidadDeColores++;
+			j--;
+		}
+		if (cantidadDeColores == 4){
+			System.out.println("Gano");
+			return true;
+		}	
+		else{	
+			return false;
+		}
+	}
+	
+	
 	/**
 	 * post: indica si el juego terminó porque uno de los jugadores
 	 * 		 ganó o no existen casilleros vacíos.
