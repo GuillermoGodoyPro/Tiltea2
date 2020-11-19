@@ -1,4 +1,3 @@
-  
 package juego;
 
 
@@ -111,26 +110,53 @@ public class CuatroEnLinea {
 	}
 	
 	//                                                        0        6
-	private boolean esFichaGanadora (Casillero color  ,int fila, int columna){
+	private boolean esFichaGanadora (Casillero ultimoColor  ,int fila, int columna){
 		int cantidadDeColores = 1;
 		int j = columna + 1;
+		int k = fila + 1;
+		boolean ganoAlguien = false;
 		
 //			7
-		while ( (j) < (tablero[0].length) && cantidadDeColores < 4 && tablero[fila][j] == color ){
+		while ( (j) < (tablero[0].length) && cantidadDeColores < 4 && tablero[fila][j] == ultimoColor ){
+			
 			cantidadDeColores++;
 			j++;
+			if(cantidadDeColores == 4){
+				ganoAlguien = true;
+			}
 		}
+		
+			
 		j = columna-1;
-		while ( cantidadDeColores < 4 && j >=0 && tablero[fila][j] == color){
+				
+		while ( cantidadDeColores < 4 && j >=0 && tablero[fila][j] == ultimoColor){
 			cantidadDeColores++;
 			j--;
+			if(cantidadDeColores == 4){
+				ganoAlguien = true;
+			}
 		}
+		
+		
+		k = fila - 1;
+		j = columna - 1;
+		
+		while ( (cantidadDeColores < 4) && (j >=0) && (k > 0) && (k < tablero.length) && (tablero[k][j] == ultimoColor) ){
+			cantidadDeColores++;
+			j--;
+			k--;
+			if(cantidadDeColores == 4){
+				ganoAlguien = true;
+			}
+		}
+		
+		
 		if (cantidadDeColores == 4){
 			System.out.println("Gano");
-			return true;
+			return ganoAlguien;
 		}	
 		else{	
-			return false;
+			return ganoAlguien;
 		}
 	}
 	
