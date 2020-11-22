@@ -15,6 +15,8 @@ public class CuatroEnLinea {
 	private String jugadorAmarillo;
 	private Casillero[][] tablero;
 	private Casillero jugadorActual = Casillero.ROJO;	
+	private boolean esPrimerJugador = true;
+	private int[] ultimoCasillero = { 0, 0 };
 	
 	/**
 	 * pre : 'filas' y 'columnas' son mayores o iguales a 4 y filas son menores a 8 y columnas menores a 16.
@@ -38,8 +40,8 @@ public class CuatroEnLinea {
 		}
 		tablero = new Casillero[filas][columnas];
 		
-		for(int i=0;i<filas;i++){
-			for(int j=0;j<columnas;j++){
+		for(int i=0; i < filas ; i++){
+			for(int j=0 ; j < columnas; j++){
 				tablero[i][j] = Casillero.VACIO;
 			}
 		}
@@ -83,36 +85,70 @@ public class CuatroEnLinea {
 	 * @param columna
 	 */
 	public void soltarFichaEnColumna(int columna) {
-		int ultimaFila = tablero.length - 1;
-		int ultimaColumna = columna - 1;
 		
-		if (!termino()){
-			while(ultimaFila > 0 && tablero[ultimaFila][ultimaColumna] != Casillero.VACIO){
-				ultimaFila--;
-			}
-			if (tablero[0][ultimaColumna] != Casillero.VACIO){
-				throw new Error ("Columna llena");
-			}
-			
-			tablero [ultimaFila][ultimaColumna] = jugadorActual;
+		int ultimaFila = tablero.length - 1;
+        columna --;
 
-			
-			if (!esFichaGanadora( jugadorActual, ultimaFila , columna-1 )){
-				if (jugadorActual == Casillero.ROJO){
-					jugadorActual = Casillero.AMARILLO;	
-				}
-				else if (jugadorActual == Casillero.AMARILLO){
-					jugadorActual = Casillero.ROJO;	
-				}
-			}
-			
-		}
+        if (!termino()){
+            while(ultimaFila > 0 && tablero[ultimaFila][columna] != Casillero.VACIO){
+                ultimaFila--;
+            }
+            if (ultimaFila >= 0 && tablero[0][columna] == Casillero.VACIO) {
+                if (esPrimerJugador) {
+                    tablero[ultimaFila][columna] = Casillero.ROJO;
+                    
+                } else {
+                    tablero[ultimaFila][columna] = Casillero.AMARILLO;
+                }
+               
+                // Guardo el ultimo casillero y cambio de jugador
+                ultimoCasillero[0] = ultimaFila;
+                ultimoCasillero[1] = columna;
+                
+
+                // Si el juego no termina con la ficha colocada, cambio el
+                // jugador
+                
+                esFichaGanadora ( ultimaFila,  columna);
+                if (!termino()) {
+                    esPrimerJugador = !esPrimerJugador;
+                    
+                }
+            }
+        }
 	}
+   
+		
+//		int ultimaFila = tablero.length - 1;
+//		int ultimaColumna = columna - 1;
+//		
+//		if (!termino()){
+//			while(ultimaFila > 0 && tablero[ultimaFila][ultimaColumna] != Casillero.VACIO ){
+//				ultimaFila--;				
+//			}
+//			
+//			if (tablero[0][ultimaColumna] != Casillero.VACIO){
+//				throw new Error ("Columna llena");
+//			}
+//			
+//			if(esPrimerJugador == true){
+//				jugadorActual = Casillero.ROJO;
+//				esPrimerJugador = false;
+//			}else{
+//				jugadorActual = Casillero.AMARILLO;
+//				esPrimerJugador =true;
+//			}
+//			
+//			tablero [ultimaFila][ultimaColumna] = jugadorActual;
+//			
+//			esFichaGanadora( jugadorActual, ultimaFila , ultimaColumna );			
+	
 	
 
-	private boolean esFichaGanadora (Casillero ultimoColor, int fila, int columna){
+	private boolean esFichaGanadora ( int fila, int columna){
+		Casillero ultimoColor = tablero[fila][columna];
 		
-		if(cuatroEnLineaHorizontal( ultimoColor, fila, columna) == true){
+		if(cuatroEnLineaHorizontal( ultimoColor, fila, columna) == true ){
 			return true;
 		}else{
 			return false;
@@ -148,41 +184,54 @@ public class CuatroEnLinea {
 		
 	
 	}
+	//                                                                     0           0
+	private boolean cuatroEnLineaHorizontal (Casillero ultimoColor  ,int fila, int columna){
+        int fichasIguales = 1;
+        int j;
+        boolean hayGanador = false;
+
+//		HORIZONTAL IZQUIERDA        
+        if(columna > 0){
+            j = columna - 1;
+
+            while(tablero[fila][j] == ultimoColor && j > 0){            	           	
+            	fichasIguales++;
+                j--;
+                if(columna == 3 && fichasIguales == 3 && tablero[fila][0] == ultimoColor){    	
+                	fichasIguales++;
+                }
+                if(fichasIguales >= 4){
+                    System.out.println("gano");
+                    hayGanador = true;
+                } 
+            }
+        }
+        
+//	 	HORIZONTAL DERECHA
+
+        j = columna + 1;       
+        
+        if( j < tablero[0].length){
+        
+            while ( tablero[fila][j] == ultimoColor && j <  tablero[0].length){
+                fichasIguales++;
+                j++;
+                if(fichasIguales >= 4){
+                    System.out.println("gano");
+                    hayGanador = true;
+                    
+                }
+                
+            }
+
+        }
+
+        return hayGanador;
+    }
+
+
 	
-	private boolean cuatroEnLineaHorizontal (Casillero ultimoColor  ,int fila, int columna){		
-		int cantidadDeColores = 1;
-		int	j;	
-		boolean hayGanador = false;
-
-		if(columna > 0){
-			j = columna - 1;
-			
-			while(tablero[fila][j] == ultimoColor && j >= 0){
-				cantidadDeColores++;
-				j--;
-				if(cantidadDeColores >= 4){
-					System.out.println("gano");
-					hayGanador = true;					
-				}
-			}
-		}
-		
-		j = columna + 1;
-		if( j < tablero[0].length){
-			while ( tablero[fila][j] == ultimoColor && j <  tablero[0].length){				
-				cantidadDeColores++;
-				j++;
-				if(cantidadDeColores >= 4){
-					System.out.println("gano");
-					hayGanador = true;					
-				}
-			}
-				
-		}
-		
-		return hayGanador;	
-	}
-
+	
 	
 	/**
 	 * post: indica si el juego terminó porque uno de los jugadores
