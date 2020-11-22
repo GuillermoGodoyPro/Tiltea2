@@ -122,27 +122,14 @@ public class CuatroEnLinea {
 		Casillero ultimoColor = tablero[fila][columna];
 		
 		if( (cuatroEnLineaHorizontal( ultimoColor, fila, columna) == true )||
-				(cuatroEnLineaverticalAbajo( ultimoColor, fila, columna)  == true ) ){
+				(cuatroEnLineaverticalAbajo( ultimoColor, fila, columna)  == true ) || 
+				(DiagonalPositiva( ultimoColor, fila, columna) == true) ){
 			return true;
 		}else{
 			return false;
 		}
 		
-//		int cantidadDeColores = 1;
-//		int j = columna + 1;
-//		int k = fila + 1;
-//		boolean ganoAlguien = false;
-//		
-//		j = columna-1;
 //				
-//		while ( cantidadDeColores < 4 && j >=0 && tablero[fila][j] == ultimoColor){
-//			cantidadDeColores++;
-//			j--;
-//			if(cantidadDeColores == 4){
-//				ganoAlguien = true;
-//			}
-//		}
-//		
 //		
 //		k = fila - 1;
 //		j = columna - 1;
@@ -222,6 +209,48 @@ public class CuatroEnLinea {
 		return false;
 	}
 	
+	
+	private boolean DiagonalPositiva(Casillero ultimoColor, int fila, int columna){
+		int fichasIguales = 1;
+		int i, j;
+		boolean ganadorHorizontal = false;
+		
+		if (fila > 0) {
+			
+			i = fila - 1;
+			j = columna + 1;
+//	A LA DERECHA Y ARRIBA
+			while (i >= 0 && j < tablero[0].length && tablero[i][j]== ultimoColor){
+				fichasIguales++;
+				if(fichasIguales >= 4){
+					ganadorHorizontal = true;
+					System.out.println("gano");
+				}
+				i--;
+				j++;
+				
+			}
+			if(columna > 0){
+				i = fila + 1;
+				j = columna - 1;
+//	A LA IZQUIERDA Y ABAJO
+				while(i < tablero.length && j >= 0 && tablero[i][j] == ultimoColor){
+					fichasIguales ++;
+					i++;
+					j--;
+					
+					if(fichasIguales >= 4){
+						ganadorHorizontal = true;
+						System.out.println("gano");
+					}
+				}
+			}
+			
+			
+		}
+		
+		return ganadorHorizontal;
+	}
 	
 	/**
 	 * post: indica si el juego terminó porque uno de los jugadores
