@@ -17,6 +17,7 @@ public class CuatroEnLinea {
 	private Casillero jugadorActual = Casillero.ROJO;	
 	private boolean esPrimerJugador = true;
 	private int[] ultimoCasillero = { 0, 0 };
+	private boolean hayUnGanador = false;
 	
 	/**
 	 * pre : 'filas' y 'columnas' son mayores o iguales a 4 y filas son menores a 8 y columnas menores a 16.
@@ -131,16 +132,18 @@ public class CuatroEnLinea {
 				(cuatroEnLineaverticalAbajo( ultimoColor, fila, columna)  == true ) || 
 				((DiagonalPositiva( ultimoColor, fila, columna) == true) ) ||
 				(diagonalNegativa( ultimoColor, fila, columna) == true)){
-			return true;
+			
+			hayUnGanador = true;
+			
+			return hayGanador();
 		}else{
-			return false;
+			return hayGanador();
 		}
 	}
 	//                                                                     0           5
 	private boolean cuatroEnLineaHorizontal (Casillero ultimoColor  ,int fila, int columna){
         int fichasIguales = 1;
-        int j;
-        boolean hayGanador = false;
+        int j;        
 
 //		HORIZONTAL IZQUIERDA        
         if(columna > 0){
@@ -154,7 +157,7 @@ public class CuatroEnLinea {
         		}
         		if(fichasIguales >= 4){
         			System.out.println("gano");
-        			hayGanador = true;
+        			return true;
         		} 
         	}
         }
@@ -170,7 +173,7 @@ public class CuatroEnLinea {
         		j++;
         		if(fichasIguales >= 4){
         			System.out.println("gano");
-        			hayGanador = true;
+        			return true;
 
         		}
 
@@ -178,13 +181,15 @@ public class CuatroEnLinea {
 
         }
 
-        return hayGanador;
+        return false;
     }
 
 //																			0			
 	private boolean cuatroEnLineaverticalAbajo(Casillero ultimoColor, int fila, int columna){
 		int fichasIguales = 1;
 		int i = fila + 1;
+		
+		
 		//vertical para abajo
 		if(fila <= 3){
 			while (i < tablero.length && tablero[i][columna] == ultimoColor ){
@@ -203,8 +208,7 @@ public class CuatroEnLinea {
 	
 	private boolean DiagonalPositiva(Casillero ultimoColor, int fila, int columna){
 		int fichasIguales = 1;
-		int i, j;
-		boolean ganadorDiagonalPositiva = false;
+		int i, j;		
 		
 		if (fila > 0) {
 			
@@ -214,8 +218,9 @@ public class CuatroEnLinea {
 			while (i >= 0 && j < tablero[0].length && tablero[i][j]== ultimoColor){
 				fichasIguales++;
 				if(fichasIguales >= 4){
-					ganadorDiagonalPositiva = true;
 					System.out.println("gano");
+					return true;
+					
 				}
 				i--;
 				j++;
@@ -231,8 +236,9 @@ public class CuatroEnLinea {
 					j--;
 					
 					if(fichasIguales >= 4){
-						ganadorDiagonalPositiva = true;
 						System.out.println("gano");
+						return true;
+						
 					}
 				}
 			}
@@ -240,14 +246,14 @@ public class CuatroEnLinea {
 			
 		}
 		
-		return ganadorDiagonalPositiva;
+		return false;
 	}
 	
 // 																	3		  3
 	private boolean diagonalNegativa (Casillero ultimoColor, int fila, int columna){
         int i,j;
         int fichasIguales = 1;
-        boolean ganadorDiagonal = false;
+       
 
 //         A LA IZQUIERDA Y ARRIBA
         if (fila > 0 && columna > 0) {
@@ -265,12 +271,12 @@ public class CuatroEnLinea {
 	            
                 if(fichasIguales >= 4){
                 	System.out.println("gano");
-                    ganadorDiagonal = true;;
+                    return true;
                 }
             }        
         }       	
         
-        // A LA DERECHA Y ABAJO
+        // A LA DERECHA Y ABAJO      2
         if(columna >= 0){
             i = fila+1;
             j = columna +1;
@@ -281,21 +287,21 @@ public class CuatroEnLinea {
             	i++;
             	j++;           	
             
-            	if (columna == 1 && i >= 0 && fichasIguales == 3 && tablero[i-2][0] == ultimoColor){
+            	if (columna == 1 && i >= 0 && fichasIguales == 3 && tablero[fila-1][0] == ultimoColor){
             		fichasIguales++;
  	            }
             	
             	
             	if(fichasIguales >=4){
             		System.out.println("gano");
-            		ganadorDiagonal = true;
+            		return true;
 
             	} 
             	
             }
         }
 
-        return ganadorDiagonal;
+        return false;
     }
 	
 	
@@ -308,6 +314,11 @@ public class CuatroEnLinea {
 	public boolean termino() {
 		boolean juegoFinalizado = false;
 		int casillerosPintados = 0 ;
+		
+		if(hayUnGanador == true){
+			juegoFinalizado = true;
+			hayGanador();
+		}
 
 		for (int filas = 0 ; filas < tablero.length; filas++ ){
 			for (int columnas = 0; columnas < (tablero[filas].length) ; columnas++){
@@ -329,8 +340,13 @@ public class CuatroEnLinea {
 	 * post: indica si el juego terminó y tiene un ganador.
 	 */
 	public boolean hayGanador() {
-
-		return false;
+		
+		if(hayUnGanador == true){
+			
+			return true;
+		}else{
+			return false;	
+		}		
 	}
 
 	/**
@@ -338,7 +354,16 @@ public class CuatroEnLinea {
 	 * post: devuelve el nombre del jugador que ganó el juego.
 	 */
 	public String obtenerGanador() {
-
-		return null;
+		
+		if(hayUnGanador == true){
+			if(esPrimerJugador == true){
+				return jugadorRojo; 			
+			}else{
+				return jugadorAmarillo;
+			}			
+		}else{
+			return null;
+		}
+		
 	}
 }
