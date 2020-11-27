@@ -72,10 +72,16 @@ public class CuatroEnLinea {
 	 * @param fila
 	 * @param columna
 	 */
+	
 	public Casillero obtenerCasillero(int fila, int columna) {
-		
-		return 	tablero[fila-1][columna-1];
-	}
+        if (fila <=0 || fila > tablero.length){
+            throw new Error ("Fila Invalida");
+        } 
+        if(columna <=0 || columna > tablero[0].length){
+            throw new Error ("Columna Invalida");
+        }
+        return     tablero[fila-1][columna-1];
+    }
 	
 	/**
 	 * pre : el juego no terminó, columna está en el intervalo [1, contarColumnas()]
@@ -237,7 +243,7 @@ public class CuatroEnLinea {
 		return ganadorDiagonalPositiva;
 	}
 	
-// 																	1		  0
+// 																	3		  3
 	private boolean diagonalNegativa (Casillero ultimoColor, int fila, int columna){
         int i,j;
         int fichasIguales = 1;
@@ -247,32 +253,39 @@ public class CuatroEnLinea {
         if (fila > 0 && columna > 0) {
             i= fila-1;
             j= columna-1;      
-            while ( i >= 1 && (j > 0) && (i < tablero.length)   && ( j < tablero[0].length ) && tablero[i][j] == ultimoColor){                
+            while ( i > 0 && j > 0 && i < tablero.length + 1 &&  j < tablero[0].length + 1  && tablero[i][j] == ultimoColor){               	
             	
 	        	fichasIguales++;
 	            i--;
-	            j--;                         
-	                
+	            j--;          	
+	         
+	            if(columna == 3 && i>0 && j>0 && tablero[i-1][0] == ultimoColor ){
+		        	fichasIguales++;
+	            }	           
+	            
                 if(fichasIguales >= 4){
                 	System.out.println("gano");
                     ganadorDiagonal = true;;
                 }
-            }
-            
-            
-            
-            
-        }
+            }        
+        }       	
+        
         // A LA DERECHA Y ABAJO
         if(columna >= 0){
             i = fila+1;
             j = columna +1;
 
             while(i < tablero.length && j < (tablero[0].length) && tablero[i][j] == ultimoColor){
-            	
+            	      	
             	fichasIguales++;
             	i++;
-            	j++;
+            	j++;           	
+            
+            	if (columna == 1 && i >= 0 && fichasIguales == 3 && tablero[i-2][0] == ultimoColor){
+            		fichasIguales++;
+ 	            }
+            	
+            	
             	if(fichasIguales >=4){
             		System.out.println("gano");
             		ganadorDiagonal = true;
